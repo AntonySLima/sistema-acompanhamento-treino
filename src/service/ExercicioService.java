@@ -23,7 +23,10 @@ public class ExercicioService {
     }
 
     public void exibirExercicios() {
-        if (exercicios.isEmpty()) return;
+        if (exercicios.isEmpty()) {
+            System.out.println("Nenhum treino cadastrado ainda!");
+            return;
+        }
         for (int i = 0; i < exercicios.size(); i++) {
             System.out.println((i + 1) + " - " + exercicios.get(i).getNome());
         }

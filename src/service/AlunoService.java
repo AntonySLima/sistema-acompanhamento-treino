@@ -21,7 +21,10 @@ public class AlunoService {
     }
 
     public void exibirAlunos() {
-        if (alunos.isEmpty()) return;
+        if (alunos.isEmpty()) {
+            System.out.println("Nenhum aluno cadastrado ainda!");
+            return;
+        }
         for (int i = 0; i < alunos.size(); i++) {
             System.out.println((i + 1) + " - " + alunos.get(i).getNome());
         }

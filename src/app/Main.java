@@ -1,11 +1,9 @@
 package app;
 
 import controller.AcademiaController;
+import exception.*;
 import model.*;
-import service.AlunoService;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -30,26 +28,39 @@ public class Main {
             opcao = scanner.nextInt();
             scanner.nextLine();
             switch (opcao) {
-                case 0:
+                case 0: {
                     System.out.println("Saindo do sistema, obrigado por utilizar!");
-                    break;
-                case 1:
+                }
+                break;
+                case 1: {
                     System.out.println("Nome do aluno: ");
                     String nome = scanner.nextLine();
                     System.out.println("Data de nascimento: ");
                     String dataNascimento = scanner.nextLine();
-                    academiaController.criarAluno(nome, dataNascimento);
-                    break;
-                case 2:
+                    try {
+                        academiaController.criarAluno(nome, dataNascimento);
+                    } catch (IllegalArgumentException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+                case 2: {
                     System.out.println("Descricao do treino: ");
                     String descricao = scanner.nextLine();
                     System.out.println("Digite o dia do treino da seguinte forma (Segunda-feira): ");
-                    String diaDeTreino = scanner.nextLine();
+                    String diaDeTreinoInput = scanner.nextLine();
                     System.out.println("Digite se este dia é referente a descanso ou treino (Descanso/Treino)");
-                    String tipoDia = scanner.nextLine();
-                    academiaController.criarTreino(descricao, academiaController.criarDiaDeTreino(academiaController.diaPorDescricao(diaDeTreino), academiaController.tipoDiaPorDescricao(tipoDia)));
-                    break;
-                case 3:
+                    String tipoDiaInput = scanner.nextLine();
+                    DiaDeTreino diaDeTreino = null;
+                    try {
+                        diaDeTreino = academiaController.criarDiaDeTreino(diaDeTreinoInput, tipoDiaInput);
+                    } catch (DiaInvalidoException | TipoDiaInvalidoException e) {
+                        throw new RuntimeException(e);
+                    }
+                    academiaController.criarTreino(descricao, diaDeTreino);
+                }
+                break;
+                case 3: {
                     System.out.println("Nome do exercicio: ");
                     String nomeExercicio = scanner.nextLine();
                     System.out.println("Carga atual em KGs: ");
@@ -61,62 +72,90 @@ public class Main {
                     System.out.println("Repetições: ");
                     int repeticoes = scanner.nextInt();
                     academiaController.criarExercicio(nomeExercicio, carga, tempoDescanso, series, repeticoes);
-                    break;
-                case 4:
+                }
+                break;
+                case 4: {
+                    if (academiaController.getAlunos().isEmpty()) {
+                        System.out.println("Nenhum aluno cadastrado ainda!");
+                        continue;
+                    }
                     System.out.println("Alunos atuais: ");
                     academiaController.exibirAlunos();
                     System.out.println("Selecione um aluno para adicionar um treino: ");
                     int indexAluno = scanner.nextInt();
+                    if (academiaController.getTreinos().isEmpty()) {
+                        System.out.println("Nenhum treino cadastrado ainda !");
+                        continue;
+                    }
                     System.out.println("Treinos atuais: ");
-                   academiaController.exibirTreinos();
+                    academiaController.exibirTreinos();
                     System.out.println("Selecione um treino para ser adicionado ao aluno escolhido:");
                     int indexTreino = scanner.nextInt();
-                    indexAluno = indexAluno - 1;
-                    indexTreino = indexTreino - 1;
-                    academiaController.adicionarTreinoAluno(academiaController.getTreinos().get(indexTreino), academiaController.getAlunos().get(indexAluno));
-
-                    break;
-                case 5:
+                    try {
+                        academiaController.adicionarTreinoAluno(academiaController.getTreino(indexTreino), academiaController.getAluno(indexAluno));
+                    } catch (AlunoNaoEncontradoException | TreinoNaoEncontradoException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+                case 5: {
+                    if (academiaController.getTreinos().isEmpty()) {
+                        System.out.println("Nenhum treino cadastrado ainda!");
+                        continue;
+                    }
                     academiaController.exibirExercicios();
                     System.out.println("Selecione um exercicio para adicionar um treino: ");
                     int indexExercicio = scanner.nextInt();
                     System.out.println("Treinos atuais: ");
                     academiaController.exibirTreinos();
                     System.out.println("Selecione um treino para ser adicionado o exercicio: ");
-                    indexTreino = scanner.nextInt();
-                    indexTreino = indexTreino - 1;
-                    indexExercicio = indexExercicio - 1;
+                    int indexTreino = scanner.nextInt();
+                    try {
+                        academiaController.adicionarExercicioTreino(academiaController.getTreino(indexTreino), academiaController.getExercicio(indexExercicio));
+                    } catch (TreinoNaoEncontradoException | ExercicioNaoEncontradoException e) {
+                        e.printStackTrace();
+                    }
 
-                    academiaController.adicionarExercicioTreino(academiaController.getTreinos().get(indexTreino), academiaController.getExercicios().get(indexExercicio));
-                    break;
-                case 6:
-                    System.out.println("Alunos disponiveis ");
+                }
+                break;
+                case 6: {
+                    if (academiaController.getAlunos().isEmpty()) {
+                        System.out.println("Nenhum aluno cadastrado ainda!");
+                        continue;
+                    }
+                    System.out.println("Alunos disponiveis: ");
                     academiaController.exibirAlunos();
+
                     System.out.println("Selecione um aluno para visualizar seus treinos: ");
-                    indexAluno = (scanner.nextInt() - 1);
-                    academiaController.mostrarTreinosAluno(academiaController.getAlunos().get(indexAluno));
-                    break;
-                case 7:
+                    int indexAluno = scanner.nextInt();
+                    academiaController.mostrarTreinosAluno(academiaController.getAluno(indexAluno));
+                }
+                break;
+                case 7: {
+                    academiaController.exibirTreinos();
+                }
+                break;
+                case 8: {
+                    academiaController.exibirExercicios();
+                }
+                break;
+                case 9: {
                     if (academiaController.getTreinos().isEmpty()) {
                         System.out.println("Nenhum treino cadastrado ainda!");
                         continue;
                     }
-                    academiaController.exibirTreinos();
-                    break;
-                case 8:
-                    if (academiaController.getExercicios().isEmpty()) {
-                        System.out.println("Nenhum exercicio cadastrado ainda!");
-                        continue;
+                    try {
+                        System.out.println("Lista atual de treinos");
+                        academiaController.exibirTreinos();
+
+                        System.out.println("Digite um treino para visualizar seus exercicios:");
+                        int indexTreino = scanner.nextInt();
+                        academiaController.mostrarExerciciosTreino(academiaController.getTreino(indexTreino));
+                    } catch (RuntimeException e) {
+                        e.printStackTrace();
                     }
-                    academiaController.exibirExercicios();
-                    break;
-                case 9:
-                    System.out.println("Treinos disponíveis:");
-                    academiaController.exibirTreinos();
-                    System.out.println("Escolha um treino pra visualizar seus exercicios atuais: ");
-                    indexTreino = scanner.nextInt();
-                    System.out.println("Exercicios do treino: " + academiaController.getTreinos().get(indexTreino).getDescricaoTreino());
-                    academiaController.mostrarExerciciosTreino(academiaController.getTreinos().get(indexTreino));
+                }
+                break;
                 default:
                     System.out.println("Opção inválida, por favor tente novamente!");
                     break;

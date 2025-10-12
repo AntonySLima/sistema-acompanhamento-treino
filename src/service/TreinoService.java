@@ -36,7 +36,10 @@ public class TreinoService {
     }
 
     public void exibirTreinos() {
-        if (treinos.isEmpty()) return;
+        if (treinos.isEmpty()) {
+            System.out.println("Nenhum treino cadastrado ainda!");
+            return;
+        }
         for (int i = 0; i < treinos.size(); i++) {
             System.out.println((i + 1) + " - " + treinos.get(i).getDescricaoTreino());
         }
