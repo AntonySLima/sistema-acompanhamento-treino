@@ -3,6 +3,9 @@ package service;
 import model.Aluno;
 
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,9 +13,10 @@ public class AlunoService {
     private List<Aluno> alunos = new ArrayList<>();
 
     public Aluno criarAluno(String nome, String dataNascimento) {
-       Aluno aluno = new Aluno(nome, dataNascimento);
-       alunos.add(aluno);
-       return aluno;
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        Aluno aluno = new Aluno(nome, dataNascimento);
+        alunos.add(aluno);
+        return aluno;
     }
 
     public void exibirInformacoesAluno(Aluno aluno) {

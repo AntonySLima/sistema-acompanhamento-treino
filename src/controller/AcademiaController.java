@@ -7,6 +7,7 @@ import service.DiaDeTreinoService;
 import service.ExercicioService;
 import service.TreinoService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class AcademiaController {
@@ -28,7 +29,7 @@ public class AcademiaController {
             throw new IllegalArgumentException("Nome do aluno inválido, por favor insira novamente!");
         }
 
-        if(dataNascimento == null || dataNascimento.isBlank()) {
+        if(dataNascimento == null) {
             throw new IllegalArgumentException("Data de nascimento inválida, por favor insira novamente!");
         }
     }
@@ -40,6 +41,10 @@ public class AcademiaController {
         if (tipoDiaInput == null || tipoDiaInput.isBlank()) {
             throw new TipoDiaInvalidoException("Tipo do dia inválido, por favor siga o padrão necessário!");
         }
+    }
+
+    public void exibirInformacoesAluno (Aluno aluno) {
+        alunoService.exibirInformacoesAluno(aluno);
     }
 
     public Exercicio criarExercicio(String nome, double carga, int tempoDescanso, int series, int repeticoes) {

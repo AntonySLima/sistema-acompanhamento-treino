@@ -4,6 +4,7 @@ import controller.AcademiaController;
 import exception.*;
 import model.*;
 
+import java.time.LocalDate;
 import java.util.Scanner;
 
 public class Main {
@@ -23,6 +24,7 @@ public class Main {
             System.out.println("7 - Visualizar treinos existentes");
             System.out.println("8 - Visualizar exercicios existentes");
             System.out.println("9 - Visualizar exercicios de um treino específico");
+            System.out.println("10 - Visualizar informações de um aluno específico");
             System.out.println("0 - Sair");
             System.out.print("Escolha uma opção: ");
             opcao = scanner.nextInt();
@@ -156,6 +158,13 @@ public class Main {
                     }
                 }
                 break;
+                case  10: {
+                    System.out.println("Alunos cadastrados:");
+                    academiaController.exibirAlunos();
+                    System.out.println("Escolha um aluno para exibir suas informações:");
+                    int indexAluno = scanner.nextInt();
+                    academiaController.exibirInformacoesAluno(academiaController.getAluno(indexAluno));
+                }
                 default:
                     System.out.println("Opção inválida, por favor tente novamente!");
                     break;
